@@ -1,7 +1,8 @@
-from views import SimpleView, AboutView
+from views import SimpleView, AboutView, ContactsView
 
 
 routes = {
-    '/': SimpleView(),
-    '/about/': AboutView()
+    '/': SimpleView,
+    '/about/': AboutView,
+    '/contacts': ContactsView
 }
