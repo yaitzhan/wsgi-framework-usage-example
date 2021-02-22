@@ -1,20 +1,50 @@
 from wsgi_framework.views import BaseView
+from wsgi_framework.response import HTTPResponse
 from wsgi_framework.templating import render
 
 
 class SimpleView(BaseView):
-    return_code = '200 OK'
-
-    def __call__(self, request):
-        # ugly - have to rewrite __call__()
-        # the problem is to pass request context...
-        body = render('index.html', title='some test title', text='Some test view with jinja2 templating', **request)
-        return self.return_code, body
+    def get(self, request):
+        content = render('index.html')
+        return HTTPResponse(content)()
 
 
 class AboutView(BaseView):
-    return_code = '200 OK'
+    def get(self, request):
+        content = render('about.html')
+        return HTTPResponse(content)()
 
-    def __call__(self, request):
-        body = render('about.html', text='Some text about something interesting', **request)
-        return self.return_code, body
+
+class ContactsView(BaseView):
+    def get(self, request):
+        content = render('contacts.html')
+        params = request.get('query_params')
+        if params:
+            print('User: {} typed into form message: {} with title: {}'.format(params.get('email'),
+                                                                               params.get('message_text'),
+                                                                               params.get('message_title')))
+        return HTTPResponse(content)()
+
+
+class CreateCourseView(BaseView):
+    def get(self, request):
+        content = render('create_course.html')
+        return HTTPResponse(content)()
+
+
+class CourseListView(BaseView):
+    def get(self, request):
+        content = render('course_list.html')
+        return HTTPResponse(content)()
+
+
+class CreateCategoryView(BaseView):
+    def get(self, request):
+        content = render('create_category.html')
+        return HTTPResponse(content)()
+
+
+class CategoryListView(BaseView):
+    def get(self, request):
+        content = render('category_list.html')
+        return HTTPResponse(content)()
