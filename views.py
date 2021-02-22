@@ -24,3 +24,27 @@ class ContactsView(BaseView):
                                                                                params.get('message_text'),
                                                                                params.get('message_title')))
         return HTTPResponse(content)()
+
+
+class CreateCourseView(BaseView):
+    def get(self, request):
+        content = render('create_course.html')
+        return HTTPResponse(content)()
+
+
+class CourseListView(BaseView):
+    def get(self, request):
+        content = render('course_list.html')
+        return HTTPResponse(content)()
+
+
+class CreateCategoryView(BaseView):
+    def get(self, request):
+        content = render('create_category.html')
+        return HTTPResponse(content)()
+
+
+class CategoryListView(BaseView):
+    def get(self, request):
+        content = render('category_list.html')
+        return HTTPResponse(content)()

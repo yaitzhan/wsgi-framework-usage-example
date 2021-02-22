@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <style>
+        .footer {
+           position: fixed;
+           left: 0;
+           bottom: 0;
+           width: 100%;
+           background-color: #4caf50;
+           color: white;
+           text-align: center;
+        }
+
+        .header {
+           position: fixed;
+           left: 0;
+           top: 0;
+           width: 100%;
+           background-color: #fcba03;
+           color: white;
+           text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    {% block body %}
+    {% endblock %}
+<div class="footer">
+    <p>Copyright © 2021 Yerzhan Aitzhanov. All rights reserved.</p>
+    {% if mobile %}
+        <p>You are using mobile version</p>
+    {% else %}
+        <p>You are using desktop version</p>
+    {% endif %}
+</div>
+</body>
+</html>
