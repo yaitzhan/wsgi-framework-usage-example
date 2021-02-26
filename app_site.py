@@ -116,3 +116,9 @@ class OnlineUniversitySite:
             if item.id == category_id:
                 return item
         return None
+
+    def get_course(self, name):
+        for item in self.courses:
+            if item.name == name:
+                return item
+        return None

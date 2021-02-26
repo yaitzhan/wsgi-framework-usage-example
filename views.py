@@ -87,3 +87,25 @@ class CategoryListView(BaseView):
     def get(self, request):
         content = render('category_list.html', objects_list=app_site.categories)
         return HTTPResponse(content)()
+
+
+class CopyCourseView(BaseView):
+    def get(self, request):
+        params = request.get('query_params')
+        course_name = params.get('name')
+        course_object = app_site.get_course(course_name)
+        content = render('copy_course.html', course=course_object)
+        return HTTPResponse(content)()
+
+    def post(self, request):
+        data = request.get('body')
+        name = data.get('course_name')
+        course_type = data.get('course_type')
+        course_category_id = data.get('course_category_id')
+        category_object = app_site.get_category_by_id(course_category_id)
+        old_course = app_site.get_course(name)
+        if old_course:
+            new_name = f'copy_{name}'
+            app_site.create_course(new_name, category_object, course_type)
+        content = render('course_list.html', objects_list=app_site.courses)
+        return HTTPResponse(content)()
