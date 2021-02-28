@@ -1,7 +1,6 @@
 import os
 
 from app_site import OnlineUniversitySite
-from app import app
 
 from wsgi_framework.views import BaseView
 from wsgi_framework.response import HTTPResponse
@@ -110,10 +109,3 @@ class CopyCourseView(BaseView):
             app_site.create_course(new_name, category_object, course_type)
         content = render('course_list.html', objects_list=app_site.courses)
         return HTTPResponse(content)()
-
-
-# redefine view class-based view
-@app.route('/')
-def simple_view(request):
-    content = render('index.html', **request)
-    return HTTPResponse(content)()
