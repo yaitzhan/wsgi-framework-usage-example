@@ -57,7 +57,11 @@ class Category:
 
 
 class Course:
+    auto_id = 0
+
     def __init__(self, name, course_type, category):
+        self.id = Course.auto_id
+        Course.auto_id += 1
         self.name = name
         self.category = category
         self.course_type = course_type
@@ -133,3 +137,14 @@ class OnlineUniversitySite:
         self.teachers.append(new_teacher)
         return new_teacher
 
+    def get_student_by_id(self, student_id):
+        for item in self.students:
+            if item.id == student_id:
+                return item
+        return None
+
+    def get_course_by_id(self, course_id):
+        for item in self.courses:
+            if item.id == course_id:
+                return item
+        return None
