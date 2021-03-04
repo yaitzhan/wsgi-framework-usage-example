@@ -93,7 +93,6 @@ class Course(Subject):
         Course.auto_id += 1
         self.name = name
         self.category = category
-        self.category.courses.append(self)
         self.course_type = course_type
 
     def __str__(self):
@@ -135,6 +134,7 @@ class CourseFactory:
         result = copy.deepcopy(proto)
         result.name = name
         result.category = category
+        result.category.courses.append(result)
         return result
 
     @staticmethod
