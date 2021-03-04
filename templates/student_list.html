@@ -7,7 +7,7 @@
 <ul>
     {% for item in objects_list %}
     <li>
-        {{item.name}} ({{item.email}})
+        {{item.name}} ({{item.email}}, курсы студента: {% for course in item.courses %}{{course.name}} {% endfor %})
     </li>
     {% endfor %}
 </ul>
