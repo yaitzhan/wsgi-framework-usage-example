@@ -81,7 +81,7 @@ class CreateStudentView(BaseView):
 
 class CourseEnrollmentView(BaseView):
     def get(self, request):
-        content = render('enroll_course.html')
+        content = render('enroll_course.html', students=app_site.students, courses=app_site.courses)
         return HTTPResponse(content)()
 
     def post(self, request):
