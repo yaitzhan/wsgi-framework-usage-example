@@ -2,11 +2,44 @@
 За основу взят пример из репозитория:
 https://github.com/PrettySolution/Design-patterns-python/blob/master/3_Prototype/prototype.py
 """
+from __future__ import annotations
+
 import copy
 from enum import Enum, auto
+from contextlib import suppress
+from typing import List, Optional, Protocol
+
+
+# define a generic observer type
+# https://www.python.org/dev/peps/pep-0544/#defining-a-protocol
+class Observer(Protocol):
+    def update(self, subject: Subject) -> None:
+        pass
+
+
+class Subject:
+    def __init__(self) -> None:
+        self._observers: List[Observer] = []
+
+    def attach(self, observer: Observer) -> None:
+        if observer not in self._observers:
+            self._observers.append(observer)
+
+    def detach(self, observer: Observer) -> None:
+        with suppress(ValueError):
+            self._observers.remove(observer)
+
+    def notify(self, modifier: Optional[Observer] = None) -> None:
+        for observer in self._observers:
+            if modifier != observer:
+                observer.update(self)
 
 
 class User:
+    class UserTypes(Enum):
+        STUDENT = auto()
+        TEACHER = auto()
+
     auto_id = 0
 
     def __init__(self, name, email, user_type):
@@ -18,14 +51,9 @@ class User:
         self.user_type = user_type
 
 
-class UserTypes(Enum):
-    STUDENT = auto()
-    TEACHER = auto()
-
-
 class UserFactory:
-    type_student = User('', '', UserTypes.STUDENT)
-    type_teacher = User('', '', UserTypes.TEACHER)
+    type_student = User('', '', User.UserTypes.STUDENT)
+    type_teacher = User('', '', User.UserTypes.TEACHER)
 
     @staticmethod
     def __new_user(proto, name, email):
@@ -56,18 +84,46 @@ class Category:
         return len(self.courses)
 
 
-class Course:
+class Course(Subject):
     auto_id = 0
 
     def __init__(self, name, course_type, category):
+        super().__init__()
         self.id = Course.auto_id
         Course.auto_id += 1
         self.name = name
         self.category = category
+        self.category.courses.append(self)
         self.course_type = course_type
 
     def __str__(self):
         return f'{self.name}, {self.course_type}'
+
+    def change(self, course_new_name, course_new_category, course_new_type):
+        self.category = course_new_category
+        self.name = course_new_name
+        self.course_type = course_new_type
+        self.notify()  # notify all observers
+
+
+class EmailNotifier:
+    def update(self, subject: Course):
+        print('sent via Email: course was changed:', subject.name)
+
+
+class SMSNotifier:
+    def update(self, subject: Course):
+        print('sent via SMS: course was changed:', subject.name)
+
+
+class TelegramNotifier:
+    def update(self, subject: Course):
+        print('sent via Telegram: course was changed:', subject.name)
+
+
+class WhatsAppNotifier:
+    def update(self, subject: Course):
+        print('sent via WhatsApp: course was changed:', subject.name)
 
 
 class CourseFactory:
@@ -79,7 +135,6 @@ class CourseFactory:
         result = copy.deepcopy(proto)
         result.name = name
         result.category = category
-        result.category.courses.append(result)
         return result
 
     @staticmethod
@@ -127,7 +182,7 @@ class OnlineUniversitySite:
                 return item
         return None
 
-    def create_new_student(self, name, email):
+    def create_new_student(self, name, email) -> User:
         new_student = UserFactory.new_student(name, email)
         self.students.append(new_student)
         return new_student
