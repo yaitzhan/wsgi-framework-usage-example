@@ -29,9 +29,10 @@ class Subject:
         with suppress(ValueError):
             self._observers.remove(observer)
 
-    def notify(self):
+    def notify(self, modifier: Optional[Observer] = None):
         for observer in self._observers:
-            observer.update(self)
+            if modifier != observer:
+                observer.update(self)
 
 
 class User:
@@ -209,7 +210,5 @@ class OnlineUniversitySite:
 
     def change_course(self, course_id, course_new_name, course_new_category, course_new_type):
         course_object = self.get_course_by_id(course_id)
-        course_object.category = course_new_category
-        course_object.name = course_new_name
-        course_object.course_type = course_new_type
+        course_object.change(course_new_name, course_new_category, course_new_type)
         return course_object
