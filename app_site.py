@@ -139,7 +139,7 @@ class OnlineUniversitySite:
 
     def get_student_by_id(self, student_id):
         for item in self.students:
-            if item.id == student_id:
+            if item.user_id == student_id:
                 return item
         return None
 
