@@ -7,6 +7,7 @@
 <form method="post">
     <input type="text" name="course_name" placeholder="Название">
     <input type="text" name="course_type" placeholder="Тип">
+    <label for="category_id">Выберите категорию:</label>
     <select size={{ categories|length }} name="category_id">
         {% for item in categories %}
         <option value="{{item.id}}">{{item.name}}</option>

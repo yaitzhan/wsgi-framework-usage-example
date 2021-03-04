@@ -124,6 +124,24 @@ class CreateCategoryView(BaseView):
         return HTTPResponse(content)()
 
 
+class ChangeCourse(BaseView):
+    def get(self, request):
+        content = render('change_course.html', courses=app_site.courses, categories=app_site.categories)
+        return HTTPResponse(content)()
+
+    def post(self, request):
+        content = render('change_course.html')
+        data = request.get('body')
+        course_id = int(data.get('course_id'))
+        course_new_name = data.get('course_name')
+        category_id = int(data.get('category_id'))
+        course_new_category = app_site.get_category_by_id(category_id)
+        course_new_type = data.get('course_type')
+        changed_course = app_site.change_course(course_id, course_new_name, course_new_category, course_new_type)
+        logger.info('Created new course: {}'.format(changed_course.id))
+        return HTTPResponse(content)()
+
+
 class CategoryListView(BaseView):
     def get(self, request):
         content = render('category_list.html', objects_list=app_site.categories)

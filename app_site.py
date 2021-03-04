@@ -148,3 +148,10 @@ class OnlineUniversitySite:
             if item.id == course_id:
                 return item
         return None
+
+    def change_course(self, course_id, course_new_name, course_new_category, course_new_type):
+        course_object = self.get_course_by_id(course_id)
+        course_object.category = course_new_category
+        course_object.name = course_new_name
+        course_object.course_type = course_new_type
+        return course_object

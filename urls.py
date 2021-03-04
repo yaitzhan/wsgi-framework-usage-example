@@ -1,5 +1,5 @@
 from views import SimpleView, AboutView, ContactsView, CreateCourseView, CourseListView, CreateCategoryView, \
-    CategoryListView, CopyCourseView, CreateStudentView, StudentsListView, CourseEnrollmentView
+    CategoryListView, CopyCourseView, CreateStudentView, StudentsListView, CourseEnrollmentView, ChangeCourse
 
 
 routes = {
@@ -14,4 +14,5 @@ routes = {
     '/create_student/': CreateStudentView,
     '/student_list/': StudentsListView,
     '/enroll_course/': CourseEnrollmentView,
+    '/change_course/': ChangeCourse,
 }
