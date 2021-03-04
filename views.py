@@ -18,7 +18,7 @@ logger = Logger(name='app-logger', logs_dir='logs')
 
 class SimpleView(BaseView):
     def get(self, request):
-        content = render('index.html', **request)
+        content = render('course_list.html', **request)
         return HTTPResponse(content)()
 
 
