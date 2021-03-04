@@ -159,9 +159,13 @@ class OnlineUniversitySite:
         self.students = []
         self.courses = []
         self.categories = []
+        self.sms_notifier = SMSNotifier()
+        self.email_notifier = EmailNotifier()
 
     def create_course(self, name, category, course_type):
         course = CourseFactory.new_course(name, category, course_type)
+        course.attach(self.sms_notifier)
+        course.attach(self.email_notifier)
         self.courses.append(course)
         return course
 
