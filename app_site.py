@@ -13,7 +13,7 @@ from typing import List, Optional, Protocol
 # define a generic observer type
 # https://www.python.org/dev/peps/pep-0544/#defining-a-protocol
 class Observer(Protocol):
-    def update(self, subject: Subject) -> None:
+    def update(self, subject: Subject):
         pass
 
 
@@ -21,18 +21,17 @@ class Subject:
     def __init__(self) -> None:
         self._observers: List[Observer] = []
 
-    def attach(self, observer: Observer) -> None:
+    def attach(self, observer: Observer):
         if observer not in self._observers:
             self._observers.append(observer)
 
-    def detach(self, observer: Observer) -> None:
+    def detach(self, observer: Observer):
         with suppress(ValueError):
             self._observers.remove(observer)
 
-    def notify(self, modifier: Optional[Observer] = None) -> None:
+    def notify(self):
         for observer in self._observers:
-            if modifier != observer:
-                observer.update(self)
+            observer.update(self)
 
 
 class User:
