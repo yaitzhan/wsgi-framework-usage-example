@@ -62,6 +62,28 @@ class CreateCourseView(BaseView):
         return HTTPResponse(content)()
 
 
+class CreateStudentView(BaseView):
+    def get(self, request):
+        content = render('create_student.html')
+        return HTTPResponse(content)()
+
+    def post(self, request):
+        content = render('create_student.html')
+        data = request.get('body')
+        logger.info('Got POST data for CreateStudentView request: {}'.format(data))
+        name = data.get('name')
+        email = data.get('email')
+        student_obj = app_site.create_new_student(name, email)
+        logger.info('Created new student')
+        return HTTPResponse(content)()
+
+
+class StudentsListView(BaseView):
+    def get(self, request):
+        content = render('student_list.html', objects_list=app_site.students)
+        return HTTPResponse(content)()
+
+
 class CourseListView(BaseView):
     def get(self, request):
         content = render('course_list.html', objects_list=app_site.courses)

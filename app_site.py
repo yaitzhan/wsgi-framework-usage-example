@@ -122,3 +122,14 @@ class OnlineUniversitySite:
             if item.name == name:
                 return item
         return None
+
+    def create_new_student(self, name, email):
+        new_student = UserFactory.new_student(name, email)
+        self.students.append(new_student)
+        return new_student
+
+    def create_new_teacher(self, name, email):
+        new_teacher = UserFactory.new_teacher(name, email)
+        self.teachers.append(new_teacher)
+        return new_teacher
+
