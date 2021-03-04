@@ -7,7 +7,7 @@
 <form method="post">
     <select size={{ students|length }} name="student_id">
         {% for item in students %}
-        <option value="{{item.id}}">{{item.name}}</option>
+        <option value="{{item.user_id}}">{{item.name}}</option>
         {% endfor %}
     </select>
     <select size={{ courses|length }} name="course_id">
