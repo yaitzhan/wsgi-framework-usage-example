@@ -29,10 +29,9 @@ class Subject:
         with suppress(ValueError):
             self._observers.remove(observer)
 
-    def notify(self, modifier: Optional[Observer] = None):
+    def notify(self):
         for observer in self._observers:
-            if modifier != observer:
-                observer.update(self)
+            observer.update(self)
 
 
 class User:
