@@ -1,4 +1,5 @@
 import os
+from urllib.parse import unquote, unquote_plus
 
 from app_site import OnlineUniversitySite
 
@@ -54,7 +55,7 @@ class CreateCourseView(BaseView):
         data = request.get('body')
         logger.info('Got POST data for CreateCourseView request: {}'.format(data))
         course_type = data.get('course_type')
-        course_name = data.get('course_name')
+        course_name = unquote_plus(data.get('course_name'))
         category_id = int(data.get('category_id'))
         category_object = app_site.get_category_by_id(category_id)
         app_site.create_course(course_name, category_object, course_type)
@@ -71,8 +72,8 @@ class CreateStudentView(BaseView):
         content = render('create_student.html')
         data = request.get('body')
         logger.info('Got POST data for CreateStudentView request: {}'.format(data))
-        name = data.get('name')
-        email = data.get('email')
+        name = unquote_plus(data.get('name'))
+        email = unquote(data.get('email'))
         student_obj = app_site.create_new_student(name, email)
         logger.info('Created new student')
         return HTTPResponse(content)()
@@ -98,7 +99,7 @@ class CreateCategoryView(BaseView):
     def post(self, request):
         body = request.get('body')
         logger.info('Got POST data for CreateCategoryView request: {}'.format(body))
-        name = body.get('name')
+        name = unquote_plus(body.get('name'))
         app_site.create_category(name)
         content = render('create_category.html', message='Категория добавлена!')
         logger.info('Created new category')
