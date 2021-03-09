@@ -5,9 +5,14 @@ https://github.com/PrettySolution/Design-patterns-python/blob/master/3_Prototype
 from __future__ import annotations
 
 import copy
-from enum import Enum, auto
+from enum import Enum
 from contextlib import suppress
-from typing import List, Optional, Protocol
+from typing import List, Protocol
+from orm import UnitOfWork, DomainObject
+from mappers import MapperRegistry
+
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 
 # define a generic observer type
@@ -34,16 +39,12 @@ class Subject:
             observer.update(self)
 
 
-class User:
+class User(DomainObject):
     class UserTypes(Enum):
-        STUDENT = auto()
-        TEACHER = auto()
-
-    auto_id = 0
+        STUDENT = 1
+        TEACHER = 2
 
     def __init__(self, name, email, user_type):
-        self.user_id = User.auto_id
-        User.auto_id += 1
         self.name = name
         self.email = email
         self.courses = []

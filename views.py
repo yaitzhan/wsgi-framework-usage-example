@@ -2,6 +2,7 @@ import os
 from urllib.parse import unquote, unquote_plus
 
 from app_site import OnlineUniversitySite
+from mappers import MapperRegistry
 
 from wsgi_framework.views import BaseView
 from wsgi_framework.response import HTTPResponse
@@ -99,7 +100,8 @@ class CourseEnrollmentView(BaseView):
 
 class StudentsListView(BaseView):
     def get(self, request):
-        content = render('student_list.html', objects_list=app_site.students)
+        mapper = MapperRegistry.get_current_mapper('student')
+        content = render('student_list.html', objects_list=mapper.all())
         return HTTPResponse(content)()
 
 
