@@ -3,7 +3,7 @@ from urllib.parse import unquote, unquote_plus
 
 from app_site import OnlineUniversitySite
 
-from wsgi_framework.views import BaseView
+from wsgi_framework.views import BaseView, CreateView, ListView
 from wsgi_framework.response import HTTPResponse
 from wsgi_framework.templating import render
 from wsgi_framework.logger import Logger
@@ -45,107 +45,66 @@ class ContactsView(BaseView):
         return HTTPResponse()()
 
 
-class CreateCourseView(BaseView):
-    def get(self, request):
-        content = render('create_course.html', categories=app_site.categories)
-        return HTTPResponse(content)()
+class CreateCourseView(CreateView):
+    template_name = 'create_course.html'
 
-    def post(self, request):
-        content = render('create_course.html', message='Новый курс добавлен!')
-        data = request.get('body')
-        logger.info('Got POST data for CreateCourseView request: {}'.format(data))
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['categories'] = app_site.categories
+        return context
+
+    def create_obj(self, data: dict):
+        category_id = data.get('category_id')
         course_type = data.get('course_type')
         course_name = unquote_plus(data.get('course_name'))
-        category_id = int(data.get('category_id'))
-        category_object = app_site.get_category_by_id(category_id)
+        category_object = app_site.get_category_by_id(int(category_id))
         app_site.create_course(course_name, category_object, course_type)
-        logger.info('Created new course')
-        return HTTPResponse(content)()
 
 
-class CreateStudentView(BaseView):
-    def get(self, request):
-        content = render('create_student.html')
-        return HTTPResponse(content)()
+class CreateStudentView(CreateView):
+    template_name = 'create_student.html'
 
-    def post(self, request):
-        content = render('create_student.html')
-        data = request.get('body')
-        logger.info('Got POST data for CreateStudentView request: {}'.format(data))
+    def create_obj(self, data: dict):
         name = unquote_plus(data.get('name'))
         email = unquote(data.get('email'))
-        student_obj = app_site.create_new_student(name, email)
+        app_site.create_new_student(name, email)
         logger.info('Created new student')
-        return HTTPResponse(content)()
 
 
-class CourseEnrollmentView(BaseView):
-    def get(self, request):
-        content = render('enroll_course.html', students=app_site.students, courses=app_site.courses)
-        return HTTPResponse(content)()
+class CourseEnrollmentView(CreateView):
+    template_name = 'enroll_course.html'
 
-    def post(self, request):
-        content = render('enroll_course.html')
-        data = request.get('body')
-        logger.info('Got POST data for CourseEnrollmentView request: {}'.format(data))
+    def create_obj(self, data: dict):
         student_id = int(data.get('student_id'))
         student_object = app_site.get_student_by_id(student_id)
         course_id = int(data.get('course_id'))
         course_object = app_site.get_course_by_id(course_id)
         student_object.courses.append(course_object)
         logger.info('Student {} enrolled into course {}'.format(student_object.name, course_object.name))
-        return HTTPResponse(content)()
 
 
-class StudentsListView(BaseView):
-    def get(self, request):
-        content = render('student_list.html', objects_list=app_site.students)
-        return HTTPResponse(content)()
+class StudentListView(ListView):
+    template_name = 'student_list.html'
+    queryset = app_site.students
 
 
-class CourseListView(BaseView):
-    def get(self, request):
-        content = render('course_list.html', objects_list=app_site.courses)
-        return HTTPResponse(content)()
+class CourseListView(ListView):
+    template_name = 'course_list.html'
+    queryset = app_site.courses
 
 
-class CreateCategoryView(BaseView):
-    def get(self, request):
-        content = render('create_category.html')
-        return HTTPResponse(content)()
+class CreateCategoryView(CreateView):
+    template_name = 'create_category.html'
 
-    def post(self, request):
-        body = request.get('body')
-        logger.info('Got POST data for CreateCategoryView request: {}'.format(body))
-        name = unquote_plus(body.get('name'))
+    def create_obj(self, data: dict):
+        name = unquote_plus(data.get('name'))
         app_site.create_category(name)
-        content = render('create_category.html', message='Категория добавлена!')
         logger.info('Created new category')
-        return HTTPResponse(content)()
 
 
-class ChangeCourse(BaseView):
-    def get(self, request):
-        content = render('change_course.html', courses=app_site.courses, categories=app_site.categories)
-        return HTTPResponse(content)()
-
-    def post(self, request):
-        content = render('change_course.html')
-        data = request.get('body')
-        course_id = int(data.get('course_id'))
-        course_new_name = unquote_plus(data.get('course_name'))
-        category_id = int(data.get('category_id'))
-        course_new_category = app_site.get_category_by_id(category_id)
-        course_new_type = unquote_plus(data.get('course_type'))
-        changed_course = app_site.change_course(course_id, course_new_name, course_new_category, course_new_type)
-        logger.info('Created new course: {}'.format(changed_course.id))
-        return HTTPResponse(content)()
-
-
-class CategoryListView(BaseView):
-    def get(self, request):
-        content = render('category_list.html', objects_list=app_site.categories)
-        return HTTPResponse(content)()
+class CategoryListView(ListView):
+    template_name = 'category_list.html'
+    queryset = app_site.categories
 
 
 class CopyCourseView(BaseView):
@@ -167,4 +126,22 @@ class CopyCourseView(BaseView):
             new_name = f'copy_{name}'
             app_site.create_course(new_name, category_object, course_type)
         content = render('course_list.html', objects_list=app_site.courses)
+        return HTTPResponse(content)()
+
+
+class ChangeCourse(BaseView):
+    def get(self, request):
+        content = render('change_course.html', courses=app_site.courses, categories=app_site.categories)
+        return HTTPResponse(content)()
+
+    def post(self, request):
+        content = render('change_course.html')
+        data = request.get('body')
+        course_id = int(data.get('course_id'))
+        course_new_name = unquote_plus(data.get('course_name'))
+        category_id = int(data.get('category_id'))
+        course_new_category = app_site.get_category_by_id(category_id)
+        course_new_type = unquote_plus(data.get('course_type'))
+        changed_course = app_site.change_course(course_id, course_new_name, course_new_category, course_new_type)
+        logger.info('Created new course: {}'.format(changed_course.id))
         return HTTPResponse(content)()
