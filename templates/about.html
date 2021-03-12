@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Some interesting title</title>
-</head>
-<body>
-{{ text }}
-{% if mobile %}
-    <p>You are using mobile version</p>
-{% else %}
-    <p>You are using desktop version</p>
-{% endif %}
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}
+About
+{% endblock %}
+{% block body %}
+<h1> Курс "Архитектура и шаблоны проектирования на Python" (2021)</h1>
+{% endblock %}

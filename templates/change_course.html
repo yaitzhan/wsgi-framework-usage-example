@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+Изменить курс
+{% endblock %}
+{% block body %}
+<h1>Изменить курс</h1>
+<form method="post">
+    <label for="course_id">Выберите курс:</label>
+    <select size={{ courses|length }} name="course_id">
+        {% for item in courses %}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {% endfor %}
+    </select>
+    <label for="category_id">Выберите категорию:</label>
+    <select size={{ categories|length }} name="category_id">
+        {% for item in categories %}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="course_name" placeholder="Новое название курса">
+    <input type="text" name="course_type" placeholder="Новый тип курса">
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}
